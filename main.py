@@ -45,14 +45,14 @@ def average_calculator(opencv, nlp, trad_ml, others, terms):
     return cv_avg, nlp_avg, trad_ml_avg, others_avg
 
 
-def text_extraction(pdfReader):
-    num_pages = len(pdfReader.pages) # Get total number of pages
+def text_extraction(pdf_reader):
+    num_pages = len(pdf_reader.pages) # Get total number of pages
     # print("total number of pages in pdf file: ", num_pages)
     count = 0 # Initialize a count for the number of pages
     text = "" # Initialize a text empty string variable
     # Extract text from every page on the file and concatenate in the text variable 
     while count < num_pages:
-        pageObj = pdfReader.getPage(count)
+        pageObj = pdf_reader.getPage(count)
         count +=1
         text += pageObj.extractText()
     return text
