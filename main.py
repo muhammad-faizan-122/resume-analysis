@@ -5,14 +5,12 @@ import re
 import string
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 # %matplotlib inline
 
 
-pdf_file_name = 'resume_pdf_files/Roberto Salazar - Resume.pdf'
-
+pdf_file_name = 'resume_pdf_files/Arslan_Arif_AI_2021.pdf'
 pdfReader = PdfReader(pdf_file_name) # Read file
-
-
 num_pages = len(pdfReader.pages) # Get total number of pages
 
 # print("total number of pages in pdf file: ", num_pages)
@@ -22,6 +20,14 @@ count = 0 # Initialize a count for the number of pages
 
 
 text = "" # Initialize a text empty string variable
+
+
+def average_calculator(opencv, nlp, trad_ml, others, terms):
+    cv_avg = (opencv/len(terms['CV']))*100
+    nlp_avg = (nlp/ len(terms['NLP']))*100
+    trad_ml_avg = (trad_ml/len(terms['Tradition ML']))*100
+    others_avg = (others/len(terms['Other skills']))*100
+    return cv_avg, nlp_avg, trad_ml_avg, others_avg
 
 # Extract text from every page on the file and concatenate in the text variable 
 while count < num_pages:
@@ -46,44 +52,30 @@ text = text.translate(str.maketrans('','',string.punctuation)) # Remove punctuat
 # print("text after removing punctuation: ", text)
 
 # Create dictionary with industrial and system engineering key terms by area
-terms = {'Quality/Six Sigma':['black belt','capability analysis','control charts','doe','dmaic','fishbone',
-                              'gage r&r', 'green belt','ishikawa','iso','kaizen','kpi','lean','metrics',
-                              'pdsa','performance improvement','process improvement','quality',
-                              'quality circles','quality tools','root cause','six sigma',
-                              'stability analysis','statistical analysis','tqm'],      
-        'Operations management':['automation','bottleneck','constraints','cycle time','efficiency','fmea',
-                                 'machinery','maintenance','manufacture','line balancing','oee','operations',
-                                 'operations research','optimization','overall equipment effectiveness',
-                                 'pfmea','process','process mapping','production','resources','safety',
-                                 'stoppage','value stream mapping','utilization'],
-        'Supply chain':['abc analysis','apics','customer','customs','delivery','distribution','eoq','epq',
-                        'fleet','forecast','inventory','logistic','materials','outsourcing','procurement',
-                        'reorder point','rout','safety stock','scheduling','shipping','stock','suppliers',
-                        'third party logistics','transport','transportation','traffic','supply chain',
-                        'vendor','warehouse','wip','work in progress'],
-        'Project management':['administration','agile','budget','cost','direction','feasibility analysis',
-                              'finance','kanban','leader','leadership','management','milestones','planning',
-                              'pmi','pmp','problem','project','risk','schedule','scrum','stakeholders'],
-        'Data analytics':['analytics','api','aws','big data','business intelligence','clustering','code',
-                          'coding','data','database','data mining','data science','deep learning','hadoop',
-                          'hypothesis test','iot','internet','machine learning','modeling','nosql','nlp',
-                          'predictive','programming','python','r','sql','tableau','text mining',
-                          'visualuzation'],
-        'Healthcare':['adverse events','care','clinic','cphq','ergonomics','healthcare',
-                      'health care','health','hospital','human factors','medical','near misses',
-                      'patient','reporting system']}
-
+terms = {'CV':['opencv', 'tensorflow', 
+               'image classification', 
+               'image segmentation', 
+               'object detection'],      
+        'NLP':['nlp, ''transformer', 
+              'encoder decoder', 
+              'bert', 'text analysis',
+              'sentiment analysis',
+              'chatbot', 'pytorch', 
+              'NLTK', 'sequence model', 
+              'text mining'],
+        'Tradition ML':['python','matplotlib',
+                        'scikit learn', 'regression', 
+                        'numpy', 'pandas'],
+        'Other skills': ['python', 'git', 'docker']
+        }
 
 
 
 # Initializie score counters for each area
-quality = 0
-operations = 0
-supplychain = 0
-project = 0
-data = 0
-healthcare = 0
-
+opencv = 0
+nlp = 0
+trad_ml = 0
+others = 0
 
 
 scores = [] # Create an empty list where the scores will be stored
@@ -92,52 +84,60 @@ scores = [] # Create an empty list where the scores will be stored
 # Obtain the scores for each area
 for area in terms.keys():
         
-    if area == 'Quality/Six Sigma':
+    if area == 'CV':
         for word in terms[area]:
             if word in text:
-                quality +=1
-        scores.append(quality)
+                opencv +=1
+        scores.append(opencv)
         
-    elif area == 'Operations management':
+    elif area == 'NLP':
         for word in terms[area]:
             if word in text:
-                operations +=1
-        scores.append(operations)
+                nlp +=1
+        scores.append(nlp)
         
-    elif area == 'Supply chain':
+    elif area == 'Tradition ML':
         for word in terms[area]:
             if word in text:
-                supplychain +=1
-        scores.append(supplychain)
+                trad_ml +=1
+        scores.append(trad_ml)
         
-    elif area == 'Project management':
+    else:        
         for word in terms[area]:
             if word in text:
-                project +=1
-        scores.append(project)
-        
-    elif area == 'Data analytics':
-        for word in terms[area]:
-            if word in text:
-                data +=1
-        scores.append(data)
-        
-    else:
-        for word in terms[area]:
-            if word in text:
-                healthcare +=1
-        scores.append(healthcare)
-        
+                others +=1
+        scores.append(others)
+    
+
+
+cv_avg, nlp_avg, trad_ml_avg, others_avg = average_calculator(opencv, nlp, trad_ml, others, terms)
+
 # Create a data frame with the scores summary
-summary = pd.DataFrame(scores,index=terms.keys(),columns=['score']).sort_values(by='score',ascending=False)
+print("terms.keys(): ",terms.keys())
+summary = pd.DataFrame([cv_avg, nlp_avg, trad_ml_avg, others_avg],index=terms.keys(),columns=['score']).sort_values(by='score',ascending=False)
 summary.to_csv("results/resume_summary.csv")
 
+avgs = np.array([cv_avg, nlp_avg, trad_ml_avg, others_avg])/100
+
+
+
+print('avgs', avgs)
+
+print("summary.index", summary.index)
 # Create pie chart visualization
 pie = plt.figure(figsize=(10,10))
-plt.pie(summary['score'], labels=summary.index, explode = (0.1,0,0,0,0,0), autopct='%1.0f%%',shadow=True,startangle=90)
-plt.title('Industrial Engineering Candidate - Resume Decomposition by Areas')
+
+
+
+plt.pie(avgs, labels=['CV', 'NLP', 'Tradition ML', 'Other skills'], explode = (0.1,0,0,0), autopct='%1.0f%%',shadow=True,startangle=90)
+plt.title('Machine Learning Engineering Candidate - Resume Decomposition by Areas')
 plt.axis('equal')
 plt.show()
 
 # Save pie chart as a .png file
 pie.savefig('results/resume_screening_results.png')
+
+
+# print(opencv,nlp, trad_ml, others)
+
+# print(len(terms['CV']))
