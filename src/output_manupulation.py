@@ -1,7 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from requirements_dict import *
 
 
 def average_calculator(opencv, nlp, trad_ml, others, terms):

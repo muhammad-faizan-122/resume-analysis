@@ -1,8 +1,8 @@
-from input_reading import read_input_pdf
-from text_processing import text_extraction
-from text_processing import text_processing
-from output_manupulation import output_calculation
-from output_manupulation import save_output
+from src.input_reading import read_input_pdf
+from src.text_processing import text_extraction
+from src.text_processing import text_processing
+from src.output_manupulation import output_calculation
+from src.output_manupulation import save_output
 
 
 # Create dictionary with industrial and system engineering key terms by area
@@ -29,7 +29,7 @@ terms = {'CV':['opencv', 'tensorflow',
 
 def run():
     # step1
-    fileName = "input_files/Arslan_Arif_AI_2021.pdf"
+    fileName = "input_files/Muhammad Faizan_resume .pdf"
     pdfReader = read_input_pdf(fileName)
 
     # step2
@@ -43,3 +43,4 @@ def run():
 
     # step5
     save_output(avg_res_list, terms)
+
