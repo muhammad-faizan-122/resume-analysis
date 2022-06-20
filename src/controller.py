@@ -26,9 +26,10 @@ terms = {'CV':['opencv', 'tensorflow',
         'Other skills': ['python', 'git', 'docker']
         }
 
+
 def run():
     # step1
-    fileName = "resume_pdf_files/Arslan_Arif_AI_2021.pdf"
+    fileName = "input_files/Arslan_Arif_AI_2021.pdf"
     pdfReader = read_input_pdf(fileName)
 
     # step2
@@ -38,7 +39,7 @@ def run():
     text = text_processing(text)
 
     # step4
-    avg_res_list = output_calculation(text)
+    avg_res_list = output_calculation(text, terms)
 
     # step5
-    save_output(avg_res_list)
+    save_output(avg_res_list, terms)

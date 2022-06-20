@@ -12,7 +12,7 @@ def average_calculator(opencv, nlp, trad_ml, others, terms):
     return cv_avg, nlp_avg, trad_ml_avg, others_avg
 
 
-def output_calculation(text):
+def output_calculation(text, terms):
     # Initializie score counters for each area
     opencv = 0
     nlp = 0
@@ -41,10 +41,10 @@ def output_calculation(text):
     return [cv_avg, nlp_avg, trad_ml_avg, others_avg]
 
 
-def save_output(avg_res):
+def save_output(avg_res, terms):
     print("terms.keys(): ",terms.keys())
     summary = pd.DataFrame(avg_res,index=terms.keys(),columns=['score']).sort_values(by='score',ascending=False)    
-    summary.to_csv("results/resume_summary.csv")
+    summary.to_csv("output/resume_summary.csv")
     print("summary.index", summary.index)
     # Create pie chart visualization
     pie = plt.figure(figsize=(10,10))
@@ -53,4 +53,4 @@ def save_output(avg_res):
     plt.axis('equal')
     plt.show()
     # Save pie chart as a .png file
-    pie.savefig('results/resume_screening_results.png')
+    pie.savefig('output/resume_screening_results.png')
