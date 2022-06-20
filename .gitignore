@@ -1,6 +1,3 @@
-/venv
-# results/resume_screening_results.png
-resume_pdf_files/Roberto Salazar - Resume.pdf
-results/resume_summary.csv
+src/venv
 ml_dict_requirements.py
 test.py
