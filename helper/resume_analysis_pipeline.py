@@ -6,7 +6,7 @@ with open("config/keywords.yml", "r") as keywords_json:
     keywords = yaml.safe_load(keywords_json)["technical_fields"]
 
 
-def run():
+def perform_resume_analysis():
     """
     Main function to execute the PDF text processing workflow.
 

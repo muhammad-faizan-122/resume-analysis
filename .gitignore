@@ -4,3 +4,4 @@ ml_dict_requirements.py
 test.py
 input_files/Muhammad Faizan_resume .pdf
 .vscode
+helper/__pycache__
