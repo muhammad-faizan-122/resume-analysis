@@ -171,7 +171,7 @@ def save_plot(output_arr, out_dir="output"):
     plt.axis("equal")
     # plt.show()
     # Save pie chart as a .png file
-    pie.savefig(f"{out_dir}/resume_screening_results.png")
+    pie.savefig(f"{out_dir}/pie_chart.png")
 
 
 def save_csv(output, fields, out_dir="output"):
@@ -187,7 +187,7 @@ def save_csv(output, fields, out_dir="output"):
     summary = pd.DataFrame(output, index=fields, columns=["score"]).sort_values(
         by="score", ascending=False
     )
-    summary.to_csv(f"{out_dir}/resume_summary.csv")
+    summary.to_csv(f"{out_dir}/summary.csv")
 
 
 def save_output(avg_res, terms):
