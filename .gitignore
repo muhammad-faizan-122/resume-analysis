@@ -1,7 +1,4 @@
 venv
-src/__pycache__
-ml_dict_requirements.py
-test.py
+*__pycache__
 input_files/Muhammad Faizan_resume .pdf
 .vscode
-helper/__pycache__

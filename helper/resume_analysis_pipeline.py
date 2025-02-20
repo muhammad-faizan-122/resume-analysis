@@ -1,9 +1,10 @@
-from .utils import *
-import yaml
-
-
-with open("config/keywords.yml", "r") as keywords_json:
-    keywords = yaml.safe_load(keywords_json)["technical_fields"]
+from .utils import (
+    load_yml_cfgs,
+    extract_text,
+    preprocess,
+    calculate_scores,
+    save_output,
+)
 
 
 def perform_resume_analysis():
@@ -24,17 +25,17 @@ def perform_resume_analysis():
     - A `config/keywords.yml` file with keywords for output calculation.
 
     """
-    # Step 1: Read input PDF
-    pdf_reader = read_input_pdf()
+    # Step 1: load configs
+    keywords = load_yml_cfgs("config/keywords.yml")
 
     # Step 2: Extract text from PDF
-    text = text_extraction(pdf_reader)
+    text = extract_text(keywords["resume_path"])
 
     # Step 3: Process text
-    processed_text = text_processing(text)
+    processed_text = preprocess(text)
 
     # Step 4: Calculate output
-    avg_res_list = output_calculation(processed_text, keywords)
+    avg_res_list = calculate_scores(processed_text, keywords["technical_fields"])
 
     # Step 5: Save output
-    save_output(avg_res_list, keywords)
+    save_output(avg_res_list, keywords["technical_fields"])

@@ -5,31 +5,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml
-import os
 
 
-with open("config/resume_path.yml") as resume_file:
-    resume_file = yaml.safe_load(resume_file)
-
-
-def read_input_pdf():
+def load_yml_cfgs(path):
     """
-    Read and parse the input PDF file using PyPDF2.
-
-    This function takes a file name as input, opens and reads the PDF file,
-    and returns a PdfReader object.
-
-    Returns:
-        PdfReader: A PdfReader object representing the input PDF file.
+    load the resume configs
     """
-    resume_par_dir = "input"
-    resume_name = resume_file["resume_name"]
-    resume_path = os.path.join(resume_par_dir, resume_name)
-    pdf_reader = PdfReader(resume_path)  # Read file
-    return pdf_reader
+    try:
+        with open(path) as resume_file:
+            resume_file = yaml.safe_load(resume_file)
+            return resume_file
+    except Exception as e:
+        raise ValueError("Failed to Load resume configurations.")
 
 
-def text_extraction(pdf_reader):
+def extract_text(resume_path):
     """
     Extracts text from each page of a PDF document.
 
@@ -39,18 +29,23 @@ def text_extraction(pdf_reader):
     Returns:
         str: The extracted text from all pages concatenated.
     """
-    num_of_pages = len(pdf_reader.pages)  # Get total number of pages
-    count = 0  # Initialize a count for the number of pages
-    text = ""  # Initialize an empty string for concatenated text
-    while count < num_of_pages:
-        pageObj = pdf_reader.pages[count]
-        count += 1
-        text += pageObj.extract_text()
-    print("text extraction completed...")
-    return text
+    try:
+        pdf_reader = PdfReader(resume_path)
+        total_pages = len(pdf_reader.pages)
+        page_num = 0
+        page_texts = ""
+        while page_num < total_pages:
+            pageObj = pdf_reader.pages[page_num]
+            page_num += 1
+            page_texts += pageObj.extract_text()
+        print("text extraction completed...")
+        return page_texts
+
+    except Exception as e:
+        raise ValueError(f"Failed to extract Resume text due to {e}")
 
 
-def text_processing(text):
+def preprocess(text):
     """
     Performs text processing operations on input text.
 
@@ -60,12 +55,13 @@ def text_processing(text):
     Returns:
         str: The processed text with lowercase letters and removed numbers and punctuation.
     """
-    text = text.lower()  # Convert all strings to lowercase
-    text = re.sub(r"\d+", "", text)  # Remove numbers
-    text = text.translate(
+    if not text:
+        return text
+    text_without_nums = re.sub(r"\d+", "", text.lower())  # Remove numbers
+    text_without_punc = text_without_nums.translate(
         str.maketrans("", "", string.punctuation)
-    )  # Remove punctuation
-    return text
+    )
+    return text_without_punc
 
 
 def count_field_keywords(tech_fields):
@@ -108,7 +104,7 @@ def calculate_output_averages(
     return cv_avg, nlp_avg, trad_ml_avg, others_avg
 
 
-def output_calculation(text, resume_dict):
+def calculate_scores(text, resume_dict):
     """
     Calculate the output scores for each skill area based on the input text.
 
@@ -123,36 +119,36 @@ def output_calculation(text, resume_dict):
         list: List of average scores for CV, NLP, Traditional ML, and Other skills.
     """
     # Initialize score counters for each area
-    opencv = 0
-    nlp = 0
-    trad_ml = 0
-    others = 0
+    cv_counts = 0
+    nlp_counts = 0
+    trad_ml_counts = 0
+    others_counts = 0
 
     # Obtain the scores for each area
     for area in resume_dict.keys():
         if area == "CV":
             for word in resume_dict[area]:
                 if word in text:
-                    opencv += 1
+                    cv_counts += 1
         elif area == "NLP":
             for word in resume_dict[area]:
                 if word in text:
-                    nlp += 1
+                    nlp_counts += 1
         elif area == "Tradition ML":
             for word in resume_dict[area]:
                 if word in text:
-                    trad_ml += 1
+                    trad_ml_counts += 1
         else:
             for word in resume_dict[area]:
                 if word in text:
-                    others += 1
+                    others_counts += 1
     cv_avg, nlp_avg, trad_ml_avg, others_avg = calculate_output_averages(
-        opencv, nlp, trad_ml, others, resume_dict
+        cv_counts, nlp_counts, trad_ml_counts, others_counts, resume_dict
     )
     return [cv_avg, nlp_avg, trad_ml_avg, others_avg]
 
 
-def save_plot(output_arr):
+def save_plot(output_arr, out_dir="output"):
     """
     Generate and save a pie chart visualizing the scores.
 
@@ -173,12 +169,12 @@ def save_plot(output_arr):
     )
     plt.title("Machine Learning Engineering Candidate - Resume Decomposition by Areas")
     plt.axis("equal")
-    plt.show()
+    # plt.show()
     # Save pie chart as a .png file
-    pie.savefig("output/resume_screening_results.png")
+    pie.savefig(f"{out_dir}/resume_screening_results.png")
 
 
-def save_csv(output, fields):
+def save_csv(output, fields, out_dir="output"):
     """
     Save the output scores to a CSV file.
 
@@ -191,7 +187,7 @@ def save_csv(output, fields):
     summary = pd.DataFrame(output, index=fields, columns=["score"]).sort_values(
         by="score", ascending=False
     )
-    summary.to_csv("output/resume_summary.csv")
+    summary.to_csv(f"{out_dir}/resume_summary.csv")
 
 
 def save_output(avg_res, terms):
