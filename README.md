@@ -1,8 +1,7 @@
 # Resume Analysis  
 
-A simple yet effective resume analysis tool that extracts text from PDF resumes and performs keyword-based analysis. This project follows a traditional approach to identify relevant information based on predefined keywords.
+A simple yet effective resume analysis tool that extracts text from PDF resumes and performs keyword-based analysis. This project follows a traditional approach to identify relevant information based on predefined keywords. You to add keyword in inside the `config/keywords.yaml' which want to check in resume.
 
-**Note:** This implementation is tailored for resumes in the AI field. To adapt it for other domains, update the keywords in **`config/keywords.yml`** accordingly.  
 
 ## How to Use  
 
