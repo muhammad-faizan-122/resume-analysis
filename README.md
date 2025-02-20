@@ -25,5 +25,5 @@ A simple yet effective resume analysis tool that extracts text from PDF resumes 
 4. **Output**
    Output will save in the Pie-chart and .CSV format in `output` directory
    
-   ![Pie-chart Representation](images/your-image.png)
+   ![Pie-chart Representation](output/pie_chart.png)
 This tool provides a foundation for automated resume analysis, allowing for easy customization to fit various domains. 🚀
